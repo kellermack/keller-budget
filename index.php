@@ -1,45 +1,5 @@
 
-<?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "budget";
 
-// Create connection
-$conn = mysqli_connect($servername, $username, $password, $dbname);
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-} 
-
-$conn->close();
-
-$category = filter_input(INPUT_POST, 'category');
-
-
-    $groceries = $_POST['category'];
-    $gas = $_POST['gas'];
-    $restaurant = $_POST['resturant'];
-    $cellPhone = $_POST['cellPhones'];
-    $televisionInternet = $_POST['televisionInternet'];
-    $entertainment = $_POST['entertainment'];
-    $clothing = $_POST['clothing'];
-    $makeUp = $_POST['makeUp'];
-    $homeImprovement = $_POST['homeImprovement'];
-    $mortgage = $_POST['mortgage'];
-    $other = $_POST['other'];
-  
-    
-$sql = "INSERT INTO kellerbudget2019 (amount, category) VALUES ('$groceries', '$gas',
-    '$restaurant', '$cellPhone', '$televisionInternet', '$entertainment', '$clothing',
-        '$makeUp', '$homeImprovement', '$mortgage', '$other');";
-mysqli_query($conn, $sql);
-            
-
-
-
-
-?>
 
 
 
@@ -80,8 +40,32 @@ mysqli_query($conn, $sql);
                     </div>
 
                 </form>
+            
+<?php
+
+require ('databaseconnection.php');
+
+$amount = filter_input(INPUT_POST, 'amount',
+        FILTER_VALIDATE_FLOAT);
+$category = filter_input(INPUT_POST, 'category');
+$date = date('Y-m-d', strtotime($_POST['date'])); 
+
+$query = "INSERT INTO budget2019 (amount, category, date) VALUE (:amount, :category, :date)";
+
+$statement = $db->prepare($query);
+$statement->bindValue(':amount', $amount);
+$statement->bindValue(':category', $category);
+$statement->bindValue(':date', $date);
+$statement->execute();
+$statement->closeCursor();
+
+if ( $amount <= 0 ) {
+    $message = 'Amount must be greater than zero';
+    echo $message; 
+}
 
 
+?>
        
     </body>
 </html>
