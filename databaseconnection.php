@@ -1,20 +1,31 @@
 <?php
-$dsn = 'mysql:host=localhost;dbname=budget';
+$servername = "localhost";
 $username = "root";
 $password = "";
+$dbName = "budget";
 
-$db = new PDO($dsn, $username, $password);
 
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-try {
-    $db = new PDO($dsn, $username, $password);
-    echo '<p> You are connected to the database </p>';
-} catch (PDOException $ex) {
-        $error_message = $ex->getMessage();
-        include('databaseError.php');
-        exit();
+$mysqli = new mysqli($servername, $username, $password, $dbName);
 
+if ($mysqli->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
+
+$sql = "SELECT SUM(amount) AS value_sum FROM housebudget";
+$result = $mysqli->query($sql);
+
+if ( $result->num_rows >0) {
+    
+    while($row = $result->fetch_assoc()) {
+        echo "Total Spent in 2019 is : " . $row["value_sum"];
+    }
+} else {
+    echo "0 results";
+}
+
+
 
 
 
