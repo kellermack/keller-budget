@@ -1,27 +1,31 @@
-
-
-
-
-
 <!DOCTYPE html>
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Cash Money</title>
+        <title>Budget</title>
     </head>
     <body>
         
-        <h1>2019 Spending database (not including January 2019)</h1>
+        <h1>2019 Spending database </h1>
         <br>
         
         <p>Enter amount spent, select type of expenditure then click submit.</p>
         
         <div id="data">
                 <label>Amount Spent:</label>
-                <input type="text" name="Amount Spent">
+               <form action="index.php" method="post">
+                   <input type="number" name = "amount"
+                          value=""
+                          min="0">
+                
+                    <input type="date" id="date" name="date"
+                           value = "2019-08-27"
+                           min="2019-01-01"
+                           max="2030-01-01">
                     
                 <br>
-                <form method="POST">
+                
+                    
                 <input type="radio" name="category" value="groceries"> Groceries<br>
                 <input type="radio" name="category" value="gas"> Gas<br> 
                 <input type="radio" name="category" value="restaurant"> Restaurant<br>
@@ -36,36 +40,43 @@
                 
                
               <div id="buttons">
-                <input type="submit" name="search"><br>
+                  <input type="submit" value="submit"><br>
                     </div>
+                
+                
 
-                </form>
-            
 <?php
 
-require ('databaseconnection.php');
+include 'databaseconnection.php';
+
+$stmt = $mysqli->prepare("INSERT INTO housebudget (amount, category, date) "
+        . "VALUES (?,?,?)");
+
+$stmt->bind_param('sss', $amount, $category, $date);
+
 
 $amount = filter_input(INPUT_POST, 'amount',
         FILTER_VALIDATE_FLOAT);
+
+
 $category = filter_input(INPUT_POST, 'category');
-$date = date('Y-m-d', strtotime($_POST['date'])); 
 
-$query = "INSERT INTO budget2019 (amount, category, date) VALUE (:amount, :category, :date)";
 
-$statement = $db->prepare($query);
-$statement->bindValue(':amount', $amount);
-$statement->bindValue(':category', $category);
-$statement->bindValue(':date', $date);
-$statement->execute();
-$statement->closeCursor();
+if(isset($_POST['date'])) {
+    $date = date('Y-m-d', strtotime($_POST['date']));
 
-if ( $amount <= 0 ) {
-    $message = 'Amount must be greater than zero';
-    echo $message; 
 }
 
 
-?>
+?>                 
+                                
+                
+                
+                
+
+                </form>
+
+
        
     </body>
 </html>
